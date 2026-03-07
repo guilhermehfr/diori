@@ -16,8 +16,8 @@ const JSON_POSTS_FILE_PATH = resolve(
 export class JsonPostRepository implements PostRepository {
   private async readFromdisk() {
     const jsonContent = await readFile(JSON_POSTS_FILE_PATH, "utf-8");
-    const parsedJsonPosts: PostModel[] = JSON.parse(jsonContent);
-    return parsedJsonPosts;
+    const parsedJson: { posts: PostModel[] } = JSON.parse(jsonContent);
+    return parsedJson.posts;
   }
 
   async getAllPosts(): Promise<PostModel[]> {
