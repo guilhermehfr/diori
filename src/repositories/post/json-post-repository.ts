@@ -20,8 +20,10 @@ export class JsonPostRepository implements PostRepository {
     return parsedJson.posts;
   }
 
-  async getAllPosts(): Promise<PostModel[]> {
-    return await this.readFromdisk();
+  async getAllPublicPosts(): Promise<PostModel[]> {
+    const posts = await this.readFromdisk();
+
+    return posts.filter((post) => post.published);
   }
 
   async getPostById(id: string): Promise<PostModel | null> {
