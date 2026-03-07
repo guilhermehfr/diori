@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+@theme {
+  --shadow-small: 0 0 40px 0 rgba(0, 0, 0, 0.5);
+  --shadow-medium: 0 0 60px 0 rgba(0, 0, 0, 0.5);
+  --shadow-large: 0 0 90px 0 rgba(0, 0, 0, 0.5);
+}
