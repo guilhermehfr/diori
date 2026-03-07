@@ -1,20 +1,19 @@
-"use client";
+import clsx from "clsx";
+import Link from "next/link";
 
-import { clsx } from "clsx";
-
-export function Header() {
+export const Header = () => {
   return (
-    <>
+    <header>
       <h1
         className={clsx(
-          "text-xl text-center font-bold text-white py-5",
-          "transition-all duration-250",
-          "hover:rounded-b-4xl hover:bg-gray-700 hover:text-white hover:px-4 hover:py-10",
+          "text-4xl/normal font-extrabold py-8",
+          "sm:text-5xl/normal sm:py-10",
+          "md:text-6xl/normal md:py-11",
+          "lg:text-7xl/normal lg:py-12",
         )}
-        onClick={() => alert("Clicado")}
       >
-        Hello World!
+        <Link href="#">Diori</Link>
       </h1>
-    </>
+    </header>
   );
-}
+};

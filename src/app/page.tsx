@@ -1,9 +1,23 @@
-import { Header } from "../components/Header";
+import { Suspense } from "react";
 
-export default function Home() {
+import { SpinLoader } from "../components/SpinLoader";
+import { Container } from "../components/Container";
+import { Header } from "../components/Header";
+import { PostFeatured } from "../components/PostFeatured";
+import { PostList } from "../components/PostsList";
+import { Footer } from "../components/Footer";
+
+export default async function Home() {
   return (
-    <div>
+    <Container>
       <Header />
-    </div>
+
+      <Suspense fallback={<SpinLoader />}>
+        <PostFeatured />
+        <PostList />
+      </Suspense>
+
+      <Footer />
+    </Container>
   );
 }
