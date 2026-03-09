@@ -1,13 +1,13 @@
 import clsx from "clsx";
 
-import { getAllPublicPosts } from "@/src/lib/post/queries";
+import { getAllPublicPostsCached } from "@/src/lib/post/queries";
 
 import { PostCoverImage } from "../PostCoverImage";
 import { PostHeading } from "../PostHeading";
 import { formatDateTime } from "@/src/utils/format-datetime";
 
 export async function PostFeatured() {
-  const posts = await getAllPublicPosts();
+  const posts = await getAllPublicPostsCached();
   const post = posts[0];
 
   const postLink = `/post/${post.slug}`;

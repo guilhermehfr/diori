@@ -1,11 +1,11 @@
 import clsx from "clsx";
 
 type SpinProps = {
-  containerClasses?: string;
+  className?: string;
 };
 
-export function SpinLoader({ containerClasses }: SpinProps): React.ReactNode {
-  const classes = clsx("flex items-center justify-center", containerClasses);
+export function SpinLoader({ className }: SpinProps): React.ReactNode {
+  const classes = clsx("flex items-center justify-center", className);
 
   return (
     <div className={classes}>

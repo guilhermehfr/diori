@@ -1,10 +1,10 @@
-import { getAllPublicPosts } from "@/src/lib/post/queries";
+import { getAllPublicPostsCached } from "@/src/lib/post/queries";
 
 import { PostCoverImage } from "../PostCoverImage";
 import { PostSummary } from "../PostSummary";
 
 export async function PostList(): Promise<React.ReactNode> {
-  const posts = await getAllPublicPosts();
+  const posts = await getAllPublicPostsCached();
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

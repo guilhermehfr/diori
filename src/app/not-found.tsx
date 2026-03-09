@@ -3,6 +3,7 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <main className="grid min-h-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
+      <title>Page Not Found</title>
       <div className="text-center">
         <p className="text-base font-extrabold text-slate-500">404</p>
         <h1 className="mt-4 text-5xl font-extrabold tracking-tight text-balance text-slate-900 sm:text-7xl">
