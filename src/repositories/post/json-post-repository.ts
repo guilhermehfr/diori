@@ -17,18 +17,43 @@ export class JsonPostRepository implements PostRepository {
   private async readFromdisk() {
     const jsonContent = await readFile(JSON_POSTS_FILE_PATH, "utf-8");
     const parsedJson: { posts: PostModel[] } = JSON.parse(jsonContent);
+    if (!parsedJson.posts) {
+      throw new Error("Invalid JSON structure: 'posts' key is missing");
+    }
     return parsedJson.posts;
   }
 
-  async getAllPublicPosts(): Promise<PostModel[]> {
-    const posts = await this.readFromdisk();
-
-    return posts.filter((post) => post.published);
+  private async delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async getPostById(id: string): Promise<PostModel | null> {
+  async getAllPublicPosts(): Promise<PostModel[]> {
+    // Simulate network/processing delay
+    await this.delay(0);
+
     const posts = await this.readFromdisk();
-    const post = posts.find((p) => p.id === id) ?? null;
+    const postsFiltered = posts.filter((post) => post.published);
+    if (postsFiltered.length === 0) {
+      throw new Error("No public posts found");
+    }
+    return postsFiltered;
+  }
+
+  async getPostById(id: string): Promise<PostModel> {
+    const posts = await this.getAllPublicPosts();
+    const post = posts.find((p) => p.id === id);
+    if (!post) {
+      throw new Error(`Post with ID '${id}' not found`);
+    }
+    return post;
+  }
+
+  async getPostBySlug(slug: string): Promise<PostModel> {
+    const posts = await this.getAllPublicPosts();
+    const post = posts.find((p) => p.slug === slug) ?? null;
+    if (!post) {
+      throw new Error(`Post with slug '${slug}' not found`);
+    }
     return post;
   }
 }
