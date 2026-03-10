@@ -21,7 +21,7 @@ export async function SinglePost({ slug }: SinglePostProps) {
           width={900}
           height={520}
           alt={post.title}
-          className="rounded-xl hover:shadow-small"
+          className="rounded-xl hover:shadow-small transition-shadow duration-300"
           loading="eager"
         />
 

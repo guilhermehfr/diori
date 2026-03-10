@@ -19,7 +19,7 @@ export async function PostFeatured() {
       <PostCoverImage
         linkProps={{
           href: postLink,
-          className: "hover:shadow-large",
+          className: "hover:shadow-small",
         }}
         imageProps={{
           src: post.coverImageUrl,
