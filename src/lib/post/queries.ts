@@ -12,7 +12,7 @@ export const getPostByIdCached = cache(
 );
 
 export const getPostBySlugCached = cache(async (slug: string) => {
-  const post = await postRepository.getPostBySlug(slug).catch(() => null);
+  const post = await postRepository.getPostBySlugPublic(slug).catch(() => null);
   if (post === null) notFound();
   return post;
 });

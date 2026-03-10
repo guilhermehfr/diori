@@ -23,37 +23,46 @@ export class JsonPostRepository implements PostRepository {
     return parsedJson.posts;
   }
 
-  private async delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  async getAllPosts(): Promise<PostModel[]> {
+    const posts = await this.readFromdisk();
+
+    if (posts.length === 0) {
+      throw new Error("No posts found");
+    }
+
+    return posts;
   }
 
   async getAllPublicPosts(): Promise<PostModel[]> {
-    // Simulate network/processing delay
-    await this.delay(0);
-
     const posts = await this.readFromdisk();
     const postsFiltered = posts.filter((post) => post.published);
+
     if (postsFiltered.length === 0) {
       throw new Error("No public posts found");
     }
+
     return postsFiltered;
   }
 
   async getPostById(id: string): Promise<PostModel> {
     const posts = await this.getAllPublicPosts();
     const post = posts.find((p) => p.id === id);
+
     if (!post) {
       throw new Error(`Post with ID '${id}' not found`);
     }
+
     return post;
   }
 
-  async getPostBySlug(slug: string): Promise<PostModel> {
+  async getPostBySlugPublic(slug: string): Promise<PostModel> {
     const posts = await this.getAllPublicPosts();
     const post = posts.find((p) => p.slug === slug) ?? null;
+
     if (!post) {
       throw new Error(`Post with slug '${slug}' not found`);
     }
+
     return post;
   }
 }

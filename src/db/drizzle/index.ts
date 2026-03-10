@@ -1,6 +1,7 @@
 import { resolve } from "path";
 import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
+
 import { postsTable } from "./schemas";
 
 const sqliteDatabasePath = resolve(process.cwd(), "db.sqlite3");
@@ -10,7 +11,5 @@ export const drizzleDb = drizzle(sqliteDatabase, {
   schema: {
     posts: postsTable,
   },
-  logger: true,
+  logger: false,
 });
-
-export * from "./schemas";

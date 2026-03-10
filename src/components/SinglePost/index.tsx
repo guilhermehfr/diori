@@ -18,10 +18,10 @@ export async function SinglePost({ slug }: SinglePostProps) {
       <header className="group flex flex-col gap-5 mb-4">
         <Image
           src={post.coverImageUrl}
-          width={900}
-          height={520}
+          width={1200}
+          height={720}
           alt={post.title}
-          className="rounded-xl hover:shadow-small transition-shadow duration-300"
+          className="md:w-225 md:h-130 object-cover rounded-xl hover:shadow-small transition-shadow duration-300"
           loading="eager"
         />
 
