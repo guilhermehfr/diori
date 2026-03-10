@@ -4,7 +4,6 @@
     "dbaeumer.vscode-eslint",
     "bradlc.vscode-tailwindcss",
     "christian-kohler.path-intellisense",
-    "formulahendry.auto-rename-tag",
-    "streetsidesoftware.code-spell-checker"
+    "formulahendry.auto-rename-tag"
   ]
 }
