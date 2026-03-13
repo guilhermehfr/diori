@@ -19,7 +19,7 @@ export function PostCoverImage({ imageProps, linkProps }: PostCoverImageProps) {
       <Image
         {...imageProps}
         className={clsx(
-          "w-7xl h-7xl object-cover group-hover:scale-105",
+          "w-7xl h-7xl object-cover group-hover:scale-105 sm:w-full sm:h-full",
           "transition-transform duration-300 ease-in-out",
           imageProps.className,
         )}

@@ -1,18 +1,23 @@
-import { cache } from "react";
 import { notFound } from "next/navigation";
 
 import { postRepository } from "@/src/repositories/post";
 
-export const getAllPublicPostsCached = cache(
-  async () => await postRepository.getAllPublicPosts(),
-);
+export async function getAllPublicPostsCached() {
+  "use cache";
 
-export const getPostByIdCached = cache(
-  async (id: string) => await postRepository.getPostById(id),
-);
+  return postRepository.getAllPublicPosts();
+}
 
-export const getPostBySlugCached = cache(async (slug: string) => {
+export async function getPostByIdCached(id: string) {
+  "use cache";
+
+  return postRepository.getPostById(id);
+}
+
+export async function getPostBySlugCached(slug: string) {
+  "use cache";
+
   const post = await postRepository.getPostBySlugPublic(slug).catch(() => null);
   if (post === null) notFound();
   return post;
-});
+}

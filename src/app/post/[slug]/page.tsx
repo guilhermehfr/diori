@@ -6,10 +6,6 @@ import { getPostBySlugCached } from "@/src/lib/post/queries";
 import { SpinLoader } from "@/src/components/SpinLoader";
 import { SinglePost } from "@/src/components/SinglePost";
 
-type PostSlugPageProps = {
-  params: Promise<{ slug: string }>;
-};
-
 export async function generateMetadata({
   params,
 }: PostSlugPageProps): Promise<Metadata> {
@@ -23,12 +19,20 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostSlugPage({ params }: PostSlugPageProps) {
+type PostSlugPageProps = {
+  params: Promise<{ slug: string }>;
+};
+
+async function PostContent({ params }: PostSlugPageProps) {
   const { slug } = await params;
 
+  return <SinglePost slug={slug} />;
+}
+
+export default function PostSlugPage(props: PostSlugPageProps) {
   return (
     <Suspense fallback={<SpinLoader className="min-h-20 mb-16" />}>
-      <SinglePost slug={slug} />
+      <PostContent {...props} />
     </Suspense>
   );
 }

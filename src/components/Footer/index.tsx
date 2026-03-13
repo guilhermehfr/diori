@@ -13,7 +13,7 @@ export const Footer = () => {
       )}
     >
       <p className="text-slate-500 text-xs/relaxed font-bold text-center">
-        <span>Copyright &copy; {new Date().getFullYear()} -</span>
+        <span>Copyright &copy; 2026 -</span>
         <Link href="/" className="hover:underline">
           Diori
         </Link>
