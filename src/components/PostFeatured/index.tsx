@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import { getAllPublicPostsCached } from "@/src/lib/post/queries";
+import { getAllPublicPostsCached } from "@/src/lib/post/queries/public";
 
 import { PostCoverImage } from "../PostCoverImage";
 import { PostHeading } from "../PostHeading";
