@@ -25,17 +25,18 @@ export const getPostByIdCached = (id: string) =>
     },
   )(id);
 
-export const getPostBySlugCached = (slug: string) =>
-  unstable_cache(
-    cache(async (slug: string) => {
+export const getPostBySlugCached = cache((slug: string) => {
+  return unstable_cache(
+    async (slug: string) => {
       const post = await postRepository
         .getPostBySlugPublic(slug)
         .catch(() => null);
       if (post === null) notFound();
       return post;
-    }),
+    },
     ["posts"],
     {
       tags: [`post-${slug}`],
     },
   )(slug);
+});

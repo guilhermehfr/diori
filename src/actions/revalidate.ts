@@ -3,13 +3,7 @@
 import { revalidateTag } from "next/cache";
 
 export async function revalidatePosts() {
-  revalidateTag("posts");
-}
-
-export async function revalidatePostById(id: string) {
-  revalidateTag(`post-${id}`);
-}
-
-export async function revalidatePostBySlug() {
+  // Revalidate the cache for the specific post slug
+  revalidateTag(`posts`);
   revalidateTag(`post-morning-routine-of-highly-effective-people`);
 }

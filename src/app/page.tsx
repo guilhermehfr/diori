@@ -4,7 +4,7 @@ import { SpinLoader } from "../components/SpinLoader";
 import { PostFeatured } from "../components/PostFeatured";
 import { PostList } from "../components/PostsList";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export default function Home() {
   return (

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { getPostByIdCached } from "@/src/lib/post/queries/public";
+import { getPostBySlugCached } from "@/src/lib/post/queries/public";
 import { formatDateTime } from "@/src/utils/format-datetime";
 
 import { SafeMarkdown } from "../SafeMarkdown";
@@ -11,7 +11,7 @@ type SinglePostProps = {
 };
 
 export async function SinglePost({ slug }: SinglePostProps) {
-  const post = await getPostByIdCached(slug);
+  const post = await getPostBySlugCached(slug);
 
   return (
     <article>
@@ -22,7 +22,7 @@ export async function SinglePost({ slug }: SinglePostProps) {
           height={720}
           alt={post.title}
           className="md:w-225 md:h-130 object-cover rounded-lg hover:shadow-small transition-shadow duration-300"
-          loading="eager"
+          priority
         />
 
         <PostHeading as="h1" url={`/post/${slug}`}>
