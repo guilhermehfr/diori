@@ -65,4 +65,14 @@ export class JsonPostRepository implements PostRepository {
 
     return post;
   }
+
+  async delete(id: string): Promise<PostModel> {
+    const posts = await this.getAllPosts();
+    const index = posts.findIndex((p) => p.id === id);
+    if (index === -1) {
+      throw new Error(`Post with ID '${id}' not found`);
+    }
+    const [deletedPost] = posts.splice(index, 1);
+    return deletedPost;
+  }
 }

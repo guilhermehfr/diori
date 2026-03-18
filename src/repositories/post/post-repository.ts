@@ -5,4 +5,5 @@ export interface PostRepository {
   getAllPublicPosts(): Promise<PostModel[]>;
   getPostById(id: string): Promise<PostModel>;
   getPostBySlugPublic(slug: string): Promise<PostModel>;
+  delete(id: string): Promise<PostModel>;
 }
