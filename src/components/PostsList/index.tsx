@@ -4,6 +4,8 @@ import { PostCoverImage } from "../PostCoverImage";
 import { PostSummary } from "../PostSummary";
 
 export async function PostList(): Promise<React.ReactNode> {
+  // TODO: IMAGE PRIORITY IN ALL POSTS (NOT ONLY IN THE FIRST ONE)
+
   const posts = await getAllPublicPostsCached();
 
   return (
