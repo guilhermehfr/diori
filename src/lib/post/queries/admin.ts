@@ -8,3 +8,7 @@ export const getPostByIdAdmin = cache(async (id: string) => {
 export const getAllPublicPostsAdmin = cache(async () => {
   return postRepository.getAllPublicPosts();
 });
+
+export const getAllPostsAdmin = cache(async () => {
+  return postRepository.getAllPosts();
+});

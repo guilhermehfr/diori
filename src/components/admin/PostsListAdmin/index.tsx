@@ -1,16 +1,18 @@
 import clsx from "clsx";
 import Link from "next/link";
 
-import { getAllPublicPostsAdmin } from "@/src/lib/post/queries/admin";
+import { getAllPostsAdmin } from "@/src/lib/post/queries/admin";
+
+import { PostModel } from "@/src/models/post/post-model";
 
 import { DeletePostButton } from "@/src/components/admin/DeletePostButton";
 
 export async function PostsListAdmin() {
-  const posts = await getAllPublicPostsAdmin();
+  const posts = await getAllPostsAdmin();
 
   return (
     <div className="mb-16">
-      {posts.map((post) => {
+      {posts.map((post: PostModel) => {
         return (
           <div
             className={clsx(
