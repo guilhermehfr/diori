@@ -15,27 +15,24 @@ type DeletePostButtonProps = {
 
 export function DeletePostButton({ id, title }: DeletePostButtonProps) {
   const [isPending, startTransition] = useTransition();
-  const [showDialog, setShowDialog] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  function handleClick() {
-    setShowDialog(true);
-  }
+  const openDialog = () => setDialogOpen(true);
+  const closeDialog = () => setDialogOpen(false);
 
-  function handleConfirm() {
+  const handleConfirm = () => {
     toast.dismiss();
-
     startTransition(async () => {
       const result = await deletePostAction(id);
-      setShowDialog(false);
+      closeDialog();
 
       if (result.error) {
         toast.error(result.error);
         return;
       }
-
-      toast.success("Post apagado com sucesso!");
+      toast.success("Post deleted successfully!");
     });
-  }
+  };
 
   return (
     <>
@@ -46,24 +43,22 @@ export function DeletePostButton({ id, title }: DeletePostButtonProps) {
           "hover:scale-120 hover:text-red-700",
           "disabled:text-slate-600 disabled:cursor-not-allowed",
         )}
-        aria-label={`Apagar post: ${title}`}
-        title={`Apagar post: ${title}`}
-        onClick={handleClick}
+        aria-label={`Delete post: ${title}`}
+        title={`Delete post: ${title}`}
+        onClick={openDialog}
         disabled={isPending}
       >
         <Trash2Icon />
       </button>
 
-      {showDialog && (
-        <Dialog
-          isVisible={showDialog}
-          title="Apagar post?"
-          content={`Tem certeza que deseja apagar o post: ${title}`}
-          onCancel={() => setShowDialog(false)}
-          onConfirm={handleConfirm}
-          disabled={isPending}
-        />
-      )}
+      <Dialog
+        isVisible={dialogOpen}
+        title="Delete post?"
+        content={`Are you sure you want to delete the post: ${title}`}
+        onCancel={closeDialog}
+        onConfirm={handleConfirm}
+        disabled={isPending}
+      />
     </>
   );
 }
