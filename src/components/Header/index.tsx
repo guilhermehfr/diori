@@ -1,8 +1,6 @@
 import clsx from "clsx";
 import Link from "next/link";
 
-import BlurText from "../BlurText";
-
 export const Header = () => {
   return (
     <header>
@@ -15,13 +13,7 @@ export const Header = () => {
         )}
       >
         <Link href="/">
-          <BlurText
-            text="Diori"
-            delay={50}
-            animateBy="letters"
-            direction="top"
-          />
-
+          Diori
           <span
             className={clsx(
               "text-slate-500 text-xs/relaxed font-bold",
@@ -31,12 +23,7 @@ export const Header = () => {
               "pl-2",
             )}
           >
-            <BlurText
-              text="Your daytime reading companion"
-              delay={50}
-              animateBy="letters"
-              direction="top"
-            />
+            Your daytime reading companion
           </span>
         </Link>
       </h1>
