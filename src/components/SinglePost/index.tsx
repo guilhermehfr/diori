@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { getPostBySlugCached } from "@/src/lib/post/queries/public";
+import { notFound } from "next/navigation";
 import { formatDateTime } from "@/src/utils/format-datetime";
 
 import { SafeMarkdown } from "../SafeMarkdown";
@@ -12,6 +13,8 @@ type SinglePostProps = {
 
 export async function SinglePost({ slug }: SinglePostProps) {
   const post = await getPostBySlugCached(slug);
+
+  if (!post) notFound();
 
   return (
     <article>

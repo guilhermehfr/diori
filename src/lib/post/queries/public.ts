@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
 
@@ -31,7 +30,6 @@ export const getPostBySlugCached = cache((slug: string) => {
       const post = await postRepository
         .getPostBySlugPublic(slug)
         .catch(() => null);
-      if (post === null) notFound();
       return post;
     },
     ["posts"],

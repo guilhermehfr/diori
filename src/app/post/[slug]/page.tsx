@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
 import { getPostBySlugCached } from "@/src/lib/post/queries/public";
 
@@ -14,6 +15,8 @@ export async function generateMetadata({
   const { slug } = await params;
 
   const post = await getPostBySlugCached(slug);
+
+  if (!post) notFound();
 
   return {
     title: post.title,
