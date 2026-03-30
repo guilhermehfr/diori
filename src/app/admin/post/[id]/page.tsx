@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 type AdminPostIdPageProps = {
   params: Promise<{

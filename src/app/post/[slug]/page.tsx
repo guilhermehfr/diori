@@ -7,7 +7,7 @@ import { getPostBySlugCached } from "@/src/lib/post/queries/public";
 import { SpinLoader } from "@/src/components/SpinLoader";
 import { SinglePost } from "@/src/components/SinglePost";
 
-export const dynamic = "force-static";
+// export const dynamic = "force-static";
 
 export async function generateMetadata({
   params,

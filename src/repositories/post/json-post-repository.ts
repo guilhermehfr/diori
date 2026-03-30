@@ -44,7 +44,7 @@ export class JsonPostRepository implements PostRepository {
     return postsFiltered;
   }
 
-  async getPostById(id: string): Promise<PostModel> {
+  async getPublicPostById(id: string): Promise<PostModel> {
     const posts = await this.getAllPublicPosts();
     const post = posts.find((p) => p.id === id);
 
@@ -55,7 +55,7 @@ export class JsonPostRepository implements PostRepository {
     return post;
   }
 
-  async getPostBySlugPublic(slug: string): Promise<PostModel> {
+  async getPublicPostBySlug(slug: string): Promise<PostModel> {
     const posts = await this.getAllPublicPosts();
     const post = posts.find((p) => p.slug === slug) ?? null;
 

@@ -27,7 +27,7 @@ export class DrizzlePostRepository implements PostRepository {
     return posts;
   }
 
-  async getPostById(id: string): Promise<PostModel> {
+  async getPublicPostById(id: string): Promise<PostModel> {
     logColor("Fetching POST by ID from the database", "green");
     const post = await drizzleDb.query.posts.findFirst({
       where: (posts, { eq }) => eq(posts.id, id),
@@ -38,7 +38,7 @@ export class DrizzlePostRepository implements PostRepository {
     return post;
   }
 
-  async getPostBySlugPublic(slug: string): Promise<PostModel> {
+  async getPublicPostBySlug(slug: string): Promise<PostModel> {
     logColor("Fetching PUBLIC POST by SLUG from the database", "green");
     const post = await drizzleDb.query.posts.findFirst({
       where: (posts, { eq, and }) =>
@@ -53,7 +53,7 @@ export class DrizzlePostRepository implements PostRepository {
 
   async delete(id: string): Promise<PostModel> {
     logColor("Deleting POST from the database", "red");
-    const post = await this.getPostById(id);
+    const post = await this.getPublicPostById(id);
     await drizzleDb.delete(postsTable).where(eq(postsTable.id, id));
     return post;
   }
