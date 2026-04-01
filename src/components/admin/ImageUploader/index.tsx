@@ -1,67 +1,67 @@
-"use client";
+'use client'
 
-import { ImageUpIcon } from "lucide-react";
-import { useRef, useState, useTransition } from "react";
-import { toast } from "react-toastify";
+import { ImageUpIcon } from 'lucide-react'
+import { useRef, useState, useTransition } from 'react'
+import { toast } from 'react-toastify'
 
-import { IMAGE_UPLOAD_MAX_SIZE } from "@/src/lib/constants";
-import { uploadImageAction } from "@/src/actions/upload/upload-image-action";
-import { Button } from "@/src/components/Button";
+import { IMAGE_UPLOAD_MAX_SIZE } from '@/src/lib/constants'
+import { uploadImageAction } from '@/src/actions/upload/upload-image-action'
+import { Button } from '@/src/components/Button'
 
 export function ImageUploader() {
-  const [isUploading, startTransition] = useTransition();
-  const [imgUrl, setImgUrl] = useState("");
+  const [isUploading, startTransition] = useTransition()
+  const [imgUrl, setImgUrl] = useState('')
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   function handleChooseFile() {
-    if (!fileInputRef.current) return;
-    fileInputRef.current.click();
+    if (!fileInputRef.current) return
+    fileInputRef.current.click()
   }
 
   function handleChange() {
-    toast.dismiss();
+    toast.dismiss()
 
     if (!fileInputRef.current) {
-      setImgUrl("");
-      return;
+      setImgUrl('')
+      return
     }
 
-    const fileInput = fileInputRef.current;
-    const file = fileInput.files?.[0];
+    const fileInput = fileInputRef.current
+    const file = fileInput.files?.[0]
 
     if (!file) {
-      setImgUrl("");
-      return;
+      setImgUrl('')
+      return
     }
 
     if (file.size > IMAGE_UPLOAD_MAX_SIZE) {
-      const readableMaxSize = IMAGE_UPLOAD_MAX_SIZE / 1024;
-      toast.error(`Image too large. Max.: ${readableMaxSize}KB.`);
+      const readableMaxSize = IMAGE_UPLOAD_MAX_SIZE / 1024
+      toast.error(`Image too large. Max.: ${readableMaxSize}KB.`)
 
-      fileInput.value = "";
-      setImgUrl("");
-      return;
+      fileInput.value = ''
+      setImgUrl('')
+      return
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
+    const formData = new FormData()
+    formData.append('file', file)
 
     startTransition(async () => {
-      const result = await uploadImageAction(formData);
+      const result = await uploadImageAction(formData)
 
       if (result.error) {
-        toast.error(result.error);
-        fileInput.value = "";
-        setImgUrl("");
-        return;
+        toast.error(result.error)
+        fileInput.value = ''
+        setImgUrl('')
+        return
       }
 
-      setImgUrl(result.url);
-      toast.success("Image sent sucessfully!");
-    });
+      setImgUrl(result.url)
+      toast.success('Image sent sucessfully!')
+    })
 
-    fileInput.value = "";
+    fileInput.value = ''
   }
 
   return (
@@ -99,5 +99,5 @@ export function ImageUploader() {
         disabled={isUploading}
       />
     </div>
-  );
+  )
 }

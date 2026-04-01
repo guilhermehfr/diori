@@ -1,24 +1,24 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next'
 
-import { Container } from "../components/Container";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
-import { ToastifyContainer } from "../components/ToastifyContainer";
+import { Container } from '../components/Container'
+import { Header } from '../components/Header'
+import { Footer } from '../components/Footer'
+import { ToastifyContainer } from '../components/ToastifyContainer'
 
-import "./globals.css";
+import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: "Diori - A blog about wellness, health and lifestyle",
-    template: "%s | Diori",
+    default: 'Diori - A blog about wellness, health and lifestyle',
+    template: '%s | Diori',
   },
-  description: "Page description",
-};
+  description: 'Page description',
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
@@ -31,5 +31,5 @@ export default function RootLayout({
         </Container>
       </body>
     </html>
-  );
+  )
 }

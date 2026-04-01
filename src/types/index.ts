@@ -1,1 +1,1 @@
-export type PostHeading = "h1" | "h2";
+export type PostHeading = 'h1' | 'h2'

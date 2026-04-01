@@ -1,37 +1,35 @@
-import { Metadata } from "next";
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { Metadata } from 'next'
+import { Suspense } from 'react'
+import { notFound } from 'next/navigation'
 
-import { getPostBySlugCached } from "@/src/lib/post/queries/public";
+import { getPostBySlugCached } from '@/src/lib/post/queries/public'
 
-import { SpinLoader } from "@/src/components/SpinLoader";
-import { SinglePost } from "@/src/components/SinglePost";
+import { SpinLoader } from '@/src/components/SpinLoader'
+import { SinglePost } from '@/src/components/SinglePost'
 
 // export const dynamic = "force-static";
 
-export async function generateMetadata({
-  params,
-}: PostSlugPageProps): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata({ params }: PostSlugPageProps): Promise<Metadata> {
+  const { slug } = await params
 
-  const post = await getPostBySlugCached(slug);
+  const post = await getPostBySlugCached(slug)
 
-  if (!post) notFound();
+  if (!post) notFound()
 
   return {
     title: post.title,
     description: post.excerpt,
-  };
+  }
 }
 
 type PostSlugPageProps = {
-  params: Promise<{ slug: string }>;
-};
+  params: Promise<{ slug: string }>
+}
 
 async function PostContent({ params }: PostSlugPageProps) {
-  const { slug } = await params;
+  const { slug } = await params
 
-  return <SinglePost slug={slug} />;
+  return <SinglePost slug={slug} />
 }
 
 export default function PostSlugPage(props: PostSlugPageProps) {
@@ -39,5 +37,5 @@ export default function PostSlugPage(props: PostSlugPageProps) {
     <Suspense fallback={<SpinLoader className="min-h-20 mb-16" />}>
       <PostContent {...props} />
     </Suspense>
-  );
+  )
 }

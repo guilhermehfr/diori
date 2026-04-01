@@ -1,20 +1,20 @@
-import Image from "next/image";
+import Image from 'next/image'
 
-import { getPostBySlugCached } from "@/src/lib/post/queries/public";
-import { notFound } from "next/navigation";
-import { formatDateTime } from "@/src/utils/format-datetime";
+import { getPostBySlugCached } from '@/src/lib/post/queries/public'
+import { notFound } from 'next/navigation'
+import { formatDateTime } from '@/src/utils/format-datetime'
 
-import { SafeMarkdown } from "../SafeMarkdown";
-import { PostHeading } from "../PostHeading";
+import { SafeMarkdown } from '../SafeMarkdown'
+import { PostHeading } from '../PostHeading'
 
 type SinglePostProps = {
-  slug: string;
-};
+  slug: string
+}
 
 export async function SinglePost({ slug }: SinglePostProps) {
-  const post = await getPostBySlugCached(slug);
+  const post = await getPostBySlugCached(slug)
 
-  if (!post) notFound();
+  if (!post) notFound()
 
   return (
     <article>
@@ -32,9 +32,9 @@ export async function SinglePost({ slug }: SinglePostProps) {
           {post.title}
         </PostHeading>
         <p>
-          {post.author + " | "}
+          {post.author + ' | '}
           <time
-            className={"text-slate-600 text-sm"}
+            className={'text-slate-600 text-sm'}
             dateTime={post.createdAt}
             title={new Date(post.createdAt).toLocaleString()}
           >
@@ -48,5 +48,5 @@ export async function SinglePost({ slug }: SinglePostProps) {
         <SafeMarkdown markdown={post.content} />
       </section>
     </article>
-  );
+  )
 }

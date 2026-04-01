@@ -1,14 +1,18 @@
-import { MenuAdmin } from "@/src/components/admin/MenuAdmin";
+import { Suspense } from 'react'
+
+import { MenuAdmin } from '@/src/components/admin/MenuAdmin'
 
 export default function AdminPostLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <>
-      <MenuAdmin />
+      <Suspense fallback={null}>
+        <MenuAdmin />
+      </Suspense>
       {children}
     </>
-  );
+  )
 }

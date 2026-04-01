@@ -1,28 +1,24 @@
-"use client";
+'use client'
 
-import { Button } from "@/src/components/Button";
-import { InputCheckbox } from "@/src/components/InputCheckbox";
-import { InputText } from "@/src/components/InputText";
-import { MarkdownEditor } from "@/src/components/MarkdownEditor";
-import { useState } from "react";
-import { ImageUploader } from "../ImageUploader";
+import { useState } from 'react'
+
+import { ImageUploader } from '../ImageUploader'
+import { Button } from '@/src/components/Button'
+import { InputCheckbox } from '@/src/components/InputCheckbox'
+import { InputText } from '@/src/components/InputText'
+import { MarkdownEditor } from '@/src/components/MarkdownEditor'
 
 export function ManagePostForm() {
-  const [contentValue, setContentValue] = useState("");
+  const [contentValue, setContentValue] = useState('')
 
   return (
     <form action="" className="mb-16">
       <div className="flex flex-col gap-6">
-        <InputText
-          labelText="Nome"
-          placeholder="Digite seu nome"
-          type="password"
-        />
+        <InputText labelText="Nome" placeholder="Digite seu nome" type="password" />
 
         <ImageUploader />
 
         <InputText labelText="Sobrenome" placeholder="Digite seu sobrenome" />
-
         <InputCheckbox labelText="Sobrenome" />
 
         <InputText
@@ -40,16 +36,10 @@ export function ManagePostForm() {
           setValue={setContentValue}
         />
 
-        <InputText
-          disabled
-          labelText="Sobrenome"
-          placeholder="Digite seu sobrenome"
-        />
-        <InputText
-          labelText="Sobrenome"
-          placeholder="Digite seu sobrenome"
-          readOnly
-        />
+        <InputText disabled labelText="Sobrenome" placeholder="Digite seu sobrenome" />
+
+        <InputText labelText="Sobrenome" placeholder="Digite seu sobrenome" readOnly />
+
         <InputText
           labelText="Sobrenome"
           placeholder="Digite seu sobrenome"
@@ -62,5 +52,5 @@ export function ManagePostForm() {
         </div>
       </div>
     </form>
-  );
+  )
 }

@@ -1,27 +1,24 @@
-import { getAllPublicPostsCached } from "@/src/lib/post/queries/public";
+import { getAllPublicPostsCached } from '@/src/lib/post/queries/public'
 
-import { PostCoverImage } from "../PostCoverImage";
-import { PostSummary } from "../PostSummary";
+import { PostCoverImage } from '../PostCoverImage'
+import { PostSummary } from '../PostSummary'
 
 export async function PostList(): Promise<React.ReactNode> {
   // TODO: IMAGE PRIORITY IN ALL POSTS (NOT ONLY IN THE FIRST ONE)
 
-  const posts = await getAllPublicPostsCached();
+  const posts = await getAllPublicPostsCached()
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {posts.slice(1).map((post) => {
-        const postLink = `/post/${post.slug}`;
+        const postLink = `/post/${post.slug}`
 
         return (
-          <div
-            className="flex flex-col group gap-4"
-            key={post.id + "_container"}
-          >
+          <div className="flex flex-col group gap-4" key={post.id + '_container'}>
             <PostCoverImage
               linkProps={{
                 href: postLink,
-                className: "hover:shadow-small",
+                className: 'hover:shadow-small',
               }}
               imageProps={{
                 src: post.coverImageUrl,
@@ -39,8 +36,8 @@ export async function PostList(): Promise<React.ReactNode> {
               excerpt={post.excerpt}
             />
           </div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

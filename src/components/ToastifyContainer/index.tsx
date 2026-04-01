@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { Bounce, ToastContainer } from "react-toastify";
+import { Bounce, ToastContainer } from 'react-toastify'
 
 export function ToastifyContainer() {
   return (
@@ -16,5 +16,5 @@ export function ToastifyContainer() {
       theme="light"
       transition={Bounce}
     />
-  );
+  )
 }

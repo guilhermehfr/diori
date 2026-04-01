@@ -1,15 +1,23 @@
 // export const dynamic = "force-dynamic";
 
+import { Suspense } from 'react'
+
 type AdminPostIdPageProps = {
   params: Promise<{
-    id: string;
-  }>;
-};
+    id: string
+  }>
+}
 
-export default async function AdminPostIdPage({
-  params,
-}: AdminPostIdPageProps) {
-  const { id } = await params;
+async function AdminPostIdContent({ params }: AdminPostIdPageProps) {
+  const { id } = await params
 
-  return <div className="py-16 text-6xl">AdminPostIdPage {id}</div>;
+  return <div className="py-16 text-6xl">AdminPostIdPage {id}</div>
+}
+
+export default function AdminPostIdPage(props: AdminPostIdPageProps) {
+  return (
+    <Suspense fallback={<div className="py-16 text-6xl">Loading...</div>}>
+      <AdminPostIdContent {...props} />
+    </Suspense>
+  )
 }

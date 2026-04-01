@@ -1,16 +1,16 @@
-import clsx from "clsx";
+import clsx from 'clsx'
 
-import type { PostHeading as PostHeadingTag } from "@/src/types";
-import { formatDateTime } from "@/src/utils/format-datetime";
-import { PostHeading } from "../PostHeading";
+import type { PostHeading as PostHeadingTag } from '@/src/types'
+import { formatDateTime } from '@/src/utils/format-datetime'
+import { PostHeading } from '../PostHeading'
 
 type PostSummaryProps = {
-  postHeading: PostHeadingTag;
-  postLink: string;
-  createdAt: string;
-  title: string;
-  excerpt: string;
-};
+  postHeading: PostHeadingTag
+  postLink: string
+  createdAt: string
+  title: string
+  excerpt: string
+}
 
 export function PostSummary({
   postHeading,
@@ -20,9 +20,9 @@ export function PostSummary({
   excerpt,
 }: PostSummaryProps) {
   return (
-    <div className={clsx("flex flex-col sm:justify-center gap-4")}>
+    <div className={clsx('flex flex-col sm:justify-center gap-4')}>
       <time
-        className={clsx("text-slate-600", "text-sm")}
+        className={clsx('text-slate-600', 'text-sm')}
         dateTime={createdAt}
         title={new Date(createdAt).toLocaleString()}
       >
@@ -35,5 +35,5 @@ export function PostSummary({
 
       <p>{excerpt}</p>
     </div>
-  );
+  )
 }

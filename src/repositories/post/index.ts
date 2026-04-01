@@ -1,5 +1,5 @@
-import type { PostRepository } from "./post-repository";
+import type { PostRepository } from './post-repository'
 
-import { DrizzlePostRepository } from "./drizzle-post-repository";
+import { DrizzlePostRepository } from './drizzle-post-repository'
 
-export const postRepository: PostRepository = new DrizzlePostRepository();
+export const postRepository: PostRepository = new DrizzlePostRepository()
