@@ -1,8 +1,10 @@
-"use server";
+'use server'
+
+import { revalidateTag } from 'next/cache'
 
 // import { verifyLoginSession } from "@/src/lib/login/manage-login";
-import { postRepository } from "@/src/repositories/post";
-import { revalidateTag } from "next/cache";
+import { TAG_POSTS, tagPost } from '@/src/lib/cache/tags'
+import { postRepository } from '@/src/repositories/post'
 
 export async function deletePostAction(id: string) {
   // const isAuthenticated = await verifyLoginSession();
@@ -13,32 +15,31 @@ export async function deletePostAction(id: string) {
   //   };
   // }
 
-  if (!id || typeof id !== "string") {
+  if (!id || typeof id !== 'string') {
     return {
-      error: "Dados inválidos",
-    };
+      error: 'Dados inválidos',
+    }
   }
 
-  let post;
+  let post
   try {
-    post = await postRepository.delete(id);
+    post = await postRepository.delete(id)
   } catch (e: unknown) {
     if (e instanceof Error) {
       return {
         error: e.message,
-      };
+      }
     }
-
     return {
-      error: "Erro desconhecido",
+      error: 'Erro desconhecido',
       errorObject: e,
-    };
+    }
   }
 
-  revalidateTag("posts", "max");
-  revalidateTag(`post-${post.slug}`, "max");
+  revalidateTag(TAG_POSTS, 'max')
+  revalidateTag(tagPost(post.slug), 'max')
 
   return {
-    error: "",
-  };
+    postDeletedSlug: post.slug,
+  }
 }
