@@ -1,6 +1,14 @@
-// export const dynamic = "force-dynamic";
-
+import { ManagePostForm } from '@/src/components/admin/ManagePostForm'
+import { SpinLoader } from '@/src/components/SpinLoader'
+import { makePublicPost } from '@/src/dto/post/dto'
+import { getPostByIdAdmin } from '@/src/lib/post/queries/admin'
+import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
+
+export const metadata: Metadata = {
+  title: 'Edit Post',
+}
 
 type AdminPostIdPageProps = {
   params: Promise<{
@@ -10,13 +18,27 @@ type AdminPostIdPageProps = {
 
 async function AdminPostIdContent({ params }: AdminPostIdPageProps) {
   const { id } = await params
+  const post = await getPostByIdAdmin(id).catch(() => {
+    return null
+  })
 
-  return <div className="py-16 text-6xl">AdminPostIdPage {id}</div>
+  if (!post) {
+    notFound()
+  }
+
+  const publicPost = makePublicPost(post)
+
+  return (
+    <div className="flex flex-col gap-6">
+      <h1 className="text-xl font-extrabold">Edit Post</h1>
+      <ManagePostForm publicPost={publicPost} />
+    </div>
+  )
 }
 
 export default function AdminPostIdPage(props: AdminPostIdPageProps) {
   return (
-    <Suspense fallback={<div className="py-16 text-6xl">Loading...</div>}>
+    <Suspense fallback={<SpinLoader />}>
       <AdminPostIdContent {...props} />
     </Suspense>
   )
