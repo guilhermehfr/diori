@@ -1,3 +1,4 @@
 export const TAG_POSTS = 'posts'
 
-export const tagPost = (id: string) => `post-${id}`
+// Slug or ID
+export const tagPost = (identificator: string) => `post-${identificator}`

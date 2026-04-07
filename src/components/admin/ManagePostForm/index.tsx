@@ -11,11 +11,19 @@ import { ImageUploader } from '../ImageUploader'
 import { createPostAction } from '@/src/actions/post/create-post-action'
 import { toast } from 'react-toastify'
 
-type ManagePostFormProps = {
-  publicPost?: PublicPost
+type ManagePostUpdateFormProps = {
+  mode: 'update'
+  publicPost: PublicPost
 }
+type ManagePostCreateFormProps = {
+  mode: 'create'
+}
+type ManagePostFormProps = ManagePostUpdateFormProps | ManagePostCreateFormProps
 
-export function ManagePostForm({ publicPost }: ManagePostFormProps) {
+export function ManagePostForm(props: ManagePostFormProps) {
+  const { mode } = props
+  const publicPost = mode === 'update' ? props.publicPost : undefined
+
   const [contentValue, setContentValue] = useState(publicPost?.content || '')
 
   const initialState = {

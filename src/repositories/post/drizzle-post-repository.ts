@@ -6,6 +6,7 @@ import type { PostModel } from '@/src/models/post/post-model'
 import { logColor } from '@/src/utils/logColor'
 import { postsTable } from '@/src/db/drizzle/schemas'
 import { eq } from 'drizzle-orm'
+import { ol } from 'motion/react-client'
 
 export class DrizzlePostRepository implements PostRepository {
   async getAllPosts(): Promise<PostModel[]> {
@@ -69,5 +70,37 @@ export class DrizzlePostRepository implements PostRepository {
     logColor('Creating POST in the database', 'green')
     await drizzleDb.insert(postsTable).values(post)
     return post
+  }
+
+  async update(
+    id: string,
+    newPostData: Omit<PostModel, 'id' | 'slug' | 'createdAt' | 'updatedAt'>
+  ): Promise<PostModel> {
+    const oldPost = await drizzleDb.query.posts.findFirst({
+      where: (posts, { eq }) => eq(posts.id, id),
+    })
+
+    if (!oldPost) {
+      throw new Error('Post with the ID: ' + id + ' was not found.')
+    }
+
+    const dateNow = new Date().toISOString()
+
+    const postData = {
+      author: newPostData.author,
+      title: newPostData.title,
+      excerpt: newPostData.excerpt,
+      published: newPostData.published,
+      content: newPostData.content,
+      coverImageUrl: newPostData.coverImageUrl,
+      updatedAt: dateNow,
+    }
+
+    await drizzleDb.update(postsTable).set(postData).where(eq(postsTable.id, id))
+
+    return {
+      ...oldPost,
+      ...postData,
+    }
   }
 }

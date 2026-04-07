@@ -1,27 +1,24 @@
 'use server'
 
 import { revalidateTag } from 'next/cache'
-import slugify from 'slugify'
-import { v4 as uuidv4 } from 'uuid'
 
-import { makePartialPublicPost, PublicPost } from '@/src/dto/post/dto'
+import { makePartialPublicPost, makePublicPostFromDb, PublicPost } from '@/src/dto/post/dto'
 import { PostModel } from '@/src/models/post/post-model'
-import { TAG_POSTS } from '@/src/lib/cache/tags'
-import { PostCreateSchema } from '@/src/lib/validation'
+import { TAG_POSTS, tagPost } from '@/src/lib/cache/tags'
+import { PostUpdateSchema } from '@/src/lib/validation'
 import { getZodErrorsMessages } from '@/src/utils/get-zod-errors-messages'
-import { redirect } from 'next/navigation'
 import { postRepository } from '@/src/repositories/post'
 
-type CreatePostActionState = {
+type UpdatePostActionState = {
   formState: PublicPost
   errors: string[]
   success?: true
 }
 
-export async function createPostAction(
-  prevState: CreatePostActionState,
+export async function updatePostAction(
+  prevState: UpdatePostActionState,
   formData: FormData
-): Promise<CreatePostActionState> {
+): Promise<UpdatePostActionState> {
   // TODO: Verify if the user is logged in
 
   if (!(formData instanceof FormData)) {
@@ -31,8 +28,17 @@ export async function createPostAction(
     }
   }
 
+  const id = formData.get('id')?.toString() || ''
+
+  if (!id || typeof id !== 'string') {
+    return {
+      formState: prevState.formState,
+      errors: ['Invalid post ID'],
+    }
+  }
+
   const formDataToObj = Object.fromEntries(formData.entries())
-  const zodParsedObj = PostCreateSchema.safeParse(formDataToObj)
+  const zodParsedObj = PostUpdateSchema.safeParse(formDataToObj)
 
   if (!zodParsedObj.success) {
     return {
@@ -43,25 +49,13 @@ export async function createPostAction(
 
   const validPostData = zodParsedObj.data
 
-  const slugWithRandomString = slugify(validPostData.title, {
-    lower: true,
-    strict: true,
-    trim: true,
-  }).concat(
-    // Add random string to ensure uniqueness;
-    '-' + Math.random().toString(36).substring(2, 6)
-  )
-
-  const newPost: PostModel = {
+  const newPost: Omit<PostModel, 'id' | 'slug' | 'createdAt' | 'updatedAt'> = {
     ...validPostData,
-    id: uuidv4(),
-    slug: slugWithRandomString,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   }
 
+  let post
   try {
-    await postRepository.create(newPost)
+    post = await postRepository.update(id, newPost)
   } catch (error) {
     return {
       formState: makePartialPublicPost(formDataToObj),
@@ -70,5 +64,11 @@ export async function createPostAction(
   }
 
   revalidateTag(TAG_POSTS, 'max')
-  redirect(`/admin/posts/${newPost.id}`)
+  revalidateTag(tagPost(post.slug), 'max')
+
+  return {
+    formState: makePublicPostFromDb(post),
+    errors: [],
+    success: true,
+  }
 }
