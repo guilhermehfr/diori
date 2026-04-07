@@ -5,5 +5,8 @@ export interface PostRepository {
   getAllPublicPosts(): Promise<PostModel[]>
   getPublicPostById(id: string): Promise<PostModel>
   getPublicPostBySlug(slug: string): Promise<PostModel>
+
+  // Mutations
+  create(post: PostModel): Promise<PostModel>
   delete(id: string): Promise<PostModel>
 }

@@ -55,4 +55,19 @@ export class DrizzlePostRepository implements PostRepository {
     await drizzleDb.delete(postsTable).where(eq(postsTable.id, id))
     return post
   }
+
+  async create(post: PostModel): Promise<PostModel> {
+    const postExists = await drizzleDb.query.posts.findFirst({
+      where: (posts, { or, eq }) => or(eq(posts.id, post.id), eq(posts.slug, post.slug)),
+      columns: { id: true },
+    })
+
+    if (!!postExists) {
+      throw new Error('Post with the SLUG: ' + post.slug + ' already exists.')
+    }
+
+    logColor('Creating POST in the database', 'green')
+    await drizzleDb.insert(postsTable).values(post)
+    return post
+  }
 }

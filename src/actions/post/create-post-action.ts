@@ -1,11 +1,18 @@
 'use server'
 
-import { makePartialPublicPost, PublicPost } from '@/src/dto/post/dto'
-import { PostCreateSchema } from '@/src/lib/validation'
-import { PostModel } from '@/src/models/post/post-model'
-import { getZodErrorsMessages } from '@/src/utils/get-zod-errors-messages'
-import { v4 as uuidv4 } from 'uuid'
+import { revalidateTag } from 'next/cache'
 import slugify from 'slugify'
+import { v4 as uuidv4 } from 'uuid'
+
+import { makePartialPublicPost, PublicPost } from '@/src/dto/post/dto'
+import { PostModel } from '@/src/models/post/post-model'
+import { TAG_POSTS } from '@/src/lib/cache/tags'
+import { PostCreateSchema } from '@/src/lib/validation'
+import { getZodErrorsMessages } from '@/src/utils/get-zod-errors-messages'
+import { drizzleDb } from '@/src/db/drizzle'
+import { postsTable } from '@/src/db/drizzle/schemas'
+import { redirect } from 'next/navigation'
+import { postRepository } from '@/src/repositories/post'
 
 type CreatePostActionState = {
   formState: PublicPost
@@ -36,16 +43,33 @@ export async function createPostAction(
   }
 
   const validPostData = zodParsedObj.data
+
+  const slugWithRandomString = slugify(validPostData.title, {
+    lower: true,
+    strict: true,
+    trim: true,
+  }).concat(
+    // Add random string to ensure uniqueness;
+    '-' + Math.random().toString(36).substring(2, 6)
+  )
+
   const newPost: PostModel = {
     ...validPostData,
     id: uuidv4(),
-    slug: slugify(validPostData.title, { lower: true, strict: true, trim: true }),
+    slug: slugWithRandomString,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }
 
-  return {
-    formState: newPost,
-    errors: [],
+  try {
+    await postRepository.create(newPost)
+  } catch (error) {
+    return {
+      formState: makePartialPublicPost(formDataToObj),
+      errors: [error instanceof Error ? error.message : 'An unexpected error occurred'],
+    }
   }
+
+  revalidateTag(TAG_POSTS, 'max')
+  redirect(`/admin/posts/${newPost.id}`)
 }
