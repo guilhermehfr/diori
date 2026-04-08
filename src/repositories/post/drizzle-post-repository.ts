@@ -6,7 +6,6 @@ import type { PostModel } from '@/src/models/post/post-model'
 import { logColor } from '@/src/utils/logColor'
 import { postsTable } from '@/src/db/drizzle/schemas'
 import { eq } from 'drizzle-orm'
-import { ol } from 'motion/react-client'
 
 export class DrizzlePostRepository implements PostRepository {
   async getAllPosts(): Promise<PostModel[]> {
