@@ -20,22 +20,20 @@ type AdminPostIdPageProps = {
 
 async function AdminPostIdContent({ params }: AdminPostIdPageProps) {
   const { id } = await params
-  const post = await getPostByIdAdmin(id).catch(() => {
-    return null
-  })
 
-  if (!post) {
+  try {
+    const post = await getPostByIdAdmin(id)
+    const publicPost = makePublicPostFromDb(post)
+
+    return (
+      <div className="flex flex-col gap-6">
+        <h1 className="text-xl font-extrabold">Edit Post</h1>
+        <ManagePostForm mode="update" publicPost={publicPost} />
+      </div>
+    )
+  } catch {
     notFound()
   }
-
-  const publicPost = makePublicPostFromDb(post)
-
-  return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-extrabold">Edit Post</h1>
-      <ManagePostForm mode="update" publicPost={publicPost} />
-    </div>
-  )
 }
 
 export default function AdminPostIdPage(props: AdminPostIdPageProps) {
