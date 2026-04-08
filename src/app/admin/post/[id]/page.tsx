@@ -1,10 +1,12 @@
-import { ManagePostForm } from '@/src/components/admin/ManagePostForm'
-import { SpinLoader } from '@/src/components/SpinLoader'
-import { makePublicPostFromDb } from '@/src/dto/post/dto'
-import { getPostByIdAdmin } from '@/src/lib/post/queries/admin'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
+
+import { getPostByIdAdmin } from '@/src/lib/post/queries/admin'
+import { makePublicPostFromDb } from '@/src/dto/post/dto'
+
+import { ManagePostForm } from '@/src/components/admin/ManagePostForm'
+import { SpinLoader } from '@/src/components/SpinLoader'
 
 export const metadata: Metadata = {
   title: 'Edit Post',
@@ -31,7 +33,7 @@ async function AdminPostIdContent({ params }: AdminPostIdPageProps) {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-xl font-extrabold">Edit Post</h1>
-      <ManagePostForm publicPost={publicPost} />
+      <ManagePostForm mode="update" publicPost={publicPost} />
     </div>
   )
 }

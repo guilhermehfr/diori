@@ -15,7 +15,7 @@ import { postRepository } from '@/src/repositories/post'
 type CreatePostActionState = {
   formState: PublicPost
   errors: string[]
-  success?: true
+  success?: number
 }
 
 export async function createPostAction(
@@ -70,5 +70,5 @@ export async function createPostAction(
   }
 
   revalidateTag(TAG_POSTS, 'max')
-  redirect(`/admin/posts/${newPost.id}`)
+  redirect(`/admin/post/${newPost.id}?created=1`)
 }

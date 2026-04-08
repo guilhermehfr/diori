@@ -12,7 +12,7 @@ import { postRepository } from '@/src/repositories/post'
 type UpdatePostActionState = {
   formState: PublicPost
   errors: string[]
-  success?: true
+  success?: number
 }
 
 export async function updatePostAction(
@@ -69,6 +69,6 @@ export async function updatePostAction(
   return {
     formState: makePublicPostFromDb(post),
     errors: [],
-    success: true,
+    success: Math.random() * (1000 - 1) + 1,
   }
 }

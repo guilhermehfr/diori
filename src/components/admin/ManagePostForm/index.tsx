@@ -1,15 +1,19 @@
 'use client'
 
 import { useActionState, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { toast } from 'react-toastify'
+
+import { ImageUploader } from '../ImageUploader'
+
+import { createPostAction } from '@/src/actions/post/create-post-action'
+import { updatePostAction } from '@/src/actions/post/update-post-action'
+import { makePartialPublicPost, PublicPost } from '@/src/dto/post/dto'
 
 import { Button } from '@/src/components/Button'
-import { InputCheckbox } from '@/src/components/InputCheckbox'
 import { InputText } from '@/src/components/InputText'
+import { InputCheckbox } from '@/src/components/InputCheckbox'
 import { MarkdownEditor } from '@/src/components/MarkdownEditor'
-import { makePartialPublicPost, PublicPost } from '@/src/dto/post/dto'
-import { ImageUploader } from '../ImageUploader'
-import { createPostAction } from '@/src/actions/post/create-post-action'
-import { toast } from 'react-toastify'
 
 type ManagePostUpdateFormProps = {
   mode: 'update'
@@ -18,11 +22,16 @@ type ManagePostUpdateFormProps = {
 type ManagePostCreateFormProps = {
   mode: 'create'
 }
+
 type ManagePostFormProps = ManagePostUpdateFormProps | ManagePostCreateFormProps
 
 export function ManagePostForm(props: ManagePostFormProps) {
   const { mode } = props
   const publicPost = mode === 'update' ? props.publicPost : undefined
+
+  const searchParams = useSearchParams()
+  const created = searchParams.get('created')
+  const router = useRouter()
 
   const [contentValue, setContentValue] = useState(publicPost?.content || '')
 
@@ -31,14 +40,39 @@ export function ManagePostForm(props: ManagePostFormProps) {
     errors: [],
   }
 
-  const [state, action, isPending] = useActionState(createPostAction, initialState)
-  const post = state.formState
+  const actionsMap = {
+    create: createPostAction,
+    update: updatePostAction,
+  }
+
+  const [{ formState: post, errors, success }, action, isPending] = useActionState(
+    actionsMap[mode],
+    initialState
+  )
 
   useEffect(() => {
-    if (state.errors.length > 0) {
-      state.errors.map((error) => toast.error(error))
+    if (errors.length > 0) {
+      errors.map((error) => toast.error(error))
     }
-  }, [state.errors])
+  }, [errors])
+
+  useEffect(() => {
+    if (success) {
+      toast.dismiss()
+      toast.success(`Post updated successfully!`)
+    }
+  }, [success])
+
+  useEffect(() => {
+    if (created === '1') {
+      toast.dismiss()
+      toast.success(`Post created successfully!`)
+
+      const url = new URL(window.location.href)
+      url.searchParams.delete('created')
+      router.replace(url.toString())
+    }
+  }, [created, router])
 
   return (
     <form action={action} className="mb-16">
@@ -49,6 +83,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
           placeholder="Automatically generated ID"
           type="text"
           defaultValue={post.id}
+          disabled={isPending}
           readOnly
         />
 
@@ -58,6 +93,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
           placeholder="Automatically generated slug"
           type="text"
           defaultValue={post.slug}
+          disabled={isPending}
           readOnly
         />
 
@@ -67,6 +103,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
           placeholder="Enter author name"
           type="text"
           defaultValue={post.author}
+          disabled={isPending}
         />
 
         <InputText
@@ -75,6 +112,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
           placeholder="Enter the title"
           type="text"
           defaultValue={post.title}
+          disabled={isPending}
         />
 
         <InputText
@@ -83,6 +121,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
           placeholder="Enter a short summary"
           type="text"
           defaultValue={post.excerpt}
+          disabled={isPending}
         />
 
         <MarkdownEditor
@@ -90,10 +129,10 @@ export function ManagePostForm(props: ManagePostFormProps) {
           value={contentValue}
           setValue={setContentValue}
           textAreaName="content"
-          disabled={false}
+          disabled={isPending}
         />
 
-        <ImageUploader />
+        <ImageUploader disabled={isPending} />
 
         <InputText
           labelText="Cover image URL"
@@ -101,6 +140,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
           placeholder="Enter the image URL"
           type="text"
           defaultValue={post.coverImageUrl}
+          disabled={isPending}
         />
 
         <InputCheckbox
@@ -108,10 +148,13 @@ export function ManagePostForm(props: ManagePostFormProps) {
           name="published"
           type="checkbox"
           defaultChecked={post.published}
+          disabled={isPending}
         />
 
         <div className="mt-4">
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isPending}>
+            Submit
+          </Button>
         </div>
       </div>
     </form>

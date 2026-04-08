@@ -8,7 +8,11 @@ import { IMAGE_UPLOAD_MAX_SIZE } from '@/src/lib/constants'
 import { uploadImageAction } from '@/src/actions/upload/upload-image-action'
 import { Button } from '@/src/components/Button'
 
-export function ImageUploader() {
+type ImageUploaderProps = {
+  disabled: boolean
+}
+
+export function ImageUploader({ disabled }: ImageUploaderProps) {
   const [isUploading, startTransition] = useTransition()
   const [imgUrl, setImgUrl] = useState('')
 
@@ -70,7 +74,7 @@ export function ImageUploader() {
         onClick={handleChooseFile}
         type="button"
         className="self-start"
-        disabled={isUploading}
+        disabled={isUploading || disabled}
       >
         <ImageUpIcon />
         Enviar uma imagem
@@ -96,7 +100,7 @@ export function ImageUploader() {
         name="file"
         type="file"
         accept="image/*"
-        disabled={isUploading}
+        disabled={isUploading || disabled}
       />
     </div>
   )
