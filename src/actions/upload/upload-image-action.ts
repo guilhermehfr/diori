@@ -1,10 +1,5 @@
 'use server'
 
-import {
-  IMAGE_SERVER_URL,
-  IMAGE_UPLOAD_DIRECTORY,
-  IMAGE_UPLOAD_MAX_SIZE,
-} from '@/src/lib/constants'
 import { mkdir, writeFile } from 'fs/promises'
 import { extname, resolve } from 'path'
 
@@ -24,14 +19,18 @@ export async function uploadImageAction(formData: FormData): Promise<UploadImage
   if (!(file instanceof File)) {
     return makeResult({ error: 'Invalid file' })
   }
-  if (file.size > IMAGE_UPLOAD_MAX_SIZE) {
+  if (file.size > Number(process.env.NEXT_PUBLIC_IMAGE_UPLOAD_MAX_SIZE)) {
     return makeResult({ error: 'File too large' })
   }
   if (!file.type.startsWith('image/')) {
     return makeResult({ error: 'Invalid image' })
   }
 
-  const uploadFullPath = resolve(process.cwd(), 'public', IMAGE_UPLOAD_DIRECTORY)
+  const uploadFullPath = resolve(
+    process.cwd(),
+    'public',
+    process.env.IMAGE_UPLOAD_DIRECTORY || 'uploads'
+  )
   await mkdir(uploadFullPath, { recursive: true })
 
   const imageExtension = extname(file.name)
@@ -42,6 +41,6 @@ export async function uploadImageAction(formData: FormData): Promise<UploadImage
   const buffer = Buffer.from(fileArrayBuffer)
   await writeFile(fileFullPath, buffer)
 
-  const url = `${IMAGE_SERVER_URL}/${IMAGE_UPLOAD_DIRECTORY}/${uniqueImageName}`
+  const url = `${process.env.IMAGE_SERVER_URL}/${process.env.IMAGE_UPLOAD_DIRECTORY}/${uniqueImageName}`
   return makeResult({ url })
 }

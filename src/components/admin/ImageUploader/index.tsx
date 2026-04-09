@@ -4,7 +4,6 @@ import { ImageUpIcon } from 'lucide-react'
 import { useRef, useState, useTransition } from 'react'
 import { toast } from 'react-toastify'
 
-import { IMAGE_UPLOAD_MAX_SIZE } from '@/src/lib/constants'
 import { uploadImageAction } from '@/src/actions/upload/upload-image-action'
 import { Button } from '@/src/components/Button'
 
@@ -38,6 +37,8 @@ export function ImageUploader({ disabled }: ImageUploaderProps) {
       setImgUrl('')
       return
     }
+
+    const IMAGE_UPLOAD_MAX_SIZE = Number(process.env.NEXT_PUBLIC_IMAGE_UPLOAD_MAX_SIZE)
 
     if (file.size > IMAGE_UPLOAD_MAX_SIZE) {
       const readableMaxSize = IMAGE_UPLOAD_MAX_SIZE / 1024
