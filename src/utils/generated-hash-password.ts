@@ -1,0 +1,6 @@
+import { hashPassword } from '../lib/login/manage-login'
+;(async () => {
+  const myPassword = '' // Gen hash for dev purposes
+  const hashedPassword = await hashPassword(myPassword)
+  console.log(hashedPassword)
+})()
