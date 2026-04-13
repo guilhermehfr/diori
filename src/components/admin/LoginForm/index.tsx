@@ -29,16 +29,20 @@ export function LoginForm() {
       <form action={action} className="flex-1 flex flex-col gap-6">
         <InputText
           type="text"
-          placeholder="username"
-          labelText="Your username"
+          name="username"
+          placeholder="Your username..."
+          labelText="Username"
           disabled={isPending}
           defaultValue={state.username}
+          autoComplete="on"
         />
         <InputText
-          type="text"
-          placeholder="password"
-          labelText="Your password"
+          type="password"
+          name="password"
+          placeholder="Your password..."
+          labelText="Password"
           disabled={isPending}
+          autoComplete="on"
         />
 
         <Button type="submit" className="mt-4" disabled={isPending}>

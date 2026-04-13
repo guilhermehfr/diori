@@ -1,6 +1,6 @@
 'use server'
 
-import { error } from 'console'
+import { verifyPassword } from '@/src/lib/login/manage-login'
 
 type LoginActionState = {
   username: string
@@ -15,11 +15,24 @@ export async function loginAction(state: LoginActionState, formData: FormData) {
     }
   }
 
-  const username = formData.get('username')?.toString() || ''
-  const password = formData.get('password')?.toString() || ''
+  const username = formData.get('username')?.toString().trim() || ''
+  const password = formData.get('password')?.toString().trim() || ''
 
-  const isCredentialsValid = () => {
-    return username === process.env.LOGIN_USER && password === process.env.LOGIN_PASSWORD
+  if (!username || !password) {
+    return {
+      username,
+      error: 'Type both username and password to login',
+    }
+  }
+
+  const isUsernameValid = username === process.env.LOGIN_USERNAME
+  const isPasswordValid = await verifyPassword(password, process.env.LOGIN_PASSWORD || '')
+
+  if (!isUsernameValid || !isPasswordValid) {
+    return {
+      username,
+      error: 'Invalid username or password',
+    }
   }
 
   return {
