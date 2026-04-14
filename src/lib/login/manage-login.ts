@@ -1,36 +1,37 @@
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
-import { SignJWT, jwtVerify } from 'jose'
+import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
+import { redirect } from 'next/navigation'
 
-const jwtSecretKey = process.env.JWT_SECRET_KEY
-const jwtEncodedKey = new TextEncoder().encode(jwtSecretKey)
+const jwtSecretKey: string | undefined = process.env.JWT_SECRET_KEY
+if (!jwtSecretKey) throw new Error('JWT_SECRET_KEY is not defined')
 
-const loginExpSeconds = Number(process.env.LOGIN_EXPIRATION_SECONDS) || 86400
-const loginExpString = process.env.LOGIN_EXPIRATION_STRING || '1d'
-const loginCookieName = process.env.LOGIN_COOKIE_NAME || 'loginSession'
+const jwtEncodedKey: Uint8Array = new TextEncoder().encode(jwtSecretKey)
 
-type JwtPayload = {
+const loginExpSeconds: number = Number(process.env.LOGIN_EXPIRATION_SECONDS) || 86400
+const loginExpString: string = process.env.LOGIN_EXPIRATION_STRING || '1d'
+const loginCookieName: string = process.env.LOGIN_COOKIE_NAME || 'loginSession'
+
+export type JwtPayload = {
   username: string
   expiresAt: Date
 }
 
-export async function hashPassword(password: string) {
-  const hash = await bcrypt.hash(password, 10)
-  const base64Hash = Buffer.from(hash).toString('base64')
+export async function hashPassword(password: string): Promise<string> {
+  const hash: string = await bcrypt.hash(password, 10)
+  const base64Hash: string = Buffer.from(hash).toString('base64')
   return base64Hash
 }
 
-export async function verifyPassword(password: string, base64Hash: string) {
-  const hash = Buffer.from(base64Hash, 'base64').toString('utf-8')
+export async function verifyPassword(password: string, base64Hash: string): Promise<boolean> {
+  const hash: string = Buffer.from(base64Hash, 'base64').toString('utf-8')
   return bcrypt.compare(password, hash)
 }
 
-export async function createLoginSession(username: string) {
-  const expiresAt = new Date(Date.now() + loginExpSeconds * 1000)
-  const loginSession = await signJwt({ username, expiresAt })
-
+export async function createLoginSession(username: string): Promise<void> {
+  const expiresAt: Date = new Date(Date.now() + loginExpSeconds * 1000)
+  const loginSession: string = await signJwt({ username, expiresAt })
   const cookieStore = await cookies()
-
   cookieStore.set(loginCookieName, loginSession, {
     httpOnly: true,
     secure: true,
@@ -39,15 +40,15 @@ export async function createLoginSession(username: string) {
   })
 }
 
-export async function deleteLoginSession() {
+export async function deleteLoginSession(): Promise<void> {
   const cookieStore = await cookies()
   cookieStore.set(loginCookieName, '', { expires: new Date(0) })
   cookieStore.delete(loginCookieName)
 }
 
-export async function getLoginSession() {
+export async function getLoginSession(): Promise<JWTPayload | null> {
   const cookieStore = await cookies()
-  const token = cookieStore.get(loginCookieName)?.value
+  const token: string | undefined = cookieStore.get(loginCookieName)?.value
 
   if (!token) {
     return null
@@ -56,15 +57,33 @@ export async function getLoginSession() {
   return await verifyJwt(token)
 }
 
-export async function signJwt(jwtPayload: JwtPayload) {
-  return new SignJWT(jwtPayload)
+export async function verifyLoginSession(): Promise<boolean | null> {
+  const loginSession = await getLoginSession()
+
+  if (!loginSession) {
+    return null
+  }
+
+  return loginSession.username === process.env.LOGIN_USERNAME
+}
+
+export async function requireLoginSessionOrRedirect(): Promise<void> {
+  const loginSession = await getLoginSession()
+
+  if (!loginSession) {
+    redirect('/admin/login')
+  }
+}
+
+export async function signJwt(jwtPayload: JwtPayload): Promise<string> {
+  return new SignJWT(jwtPayload as unknown as JWTPayload)
     .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
     .setIssuedAt()
     .setExpirationTime(loginExpString)
     .sign(jwtEncodedKey)
 }
 
-export async function verifyJwt(token: string | undefined = '') {
+export async function verifyJwt(token: string | undefined = ''): Promise<JWTPayload | null> {
   try {
     const { payload } = await jwtVerify(token, jwtEncodedKey, {
       algorithms: ['HS256'],
