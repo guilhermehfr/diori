@@ -1,5 +1,6 @@
 'use server'
 
+import { verifyLoginSession } from '@/src/lib/login/manage-login'
 import { mkdir, writeFile } from 'fs/promises'
 import { extname, resolve } from 'path'
 
@@ -10,6 +11,13 @@ type UploadImageActionResult = {
 
 export async function uploadImageAction(formData: FormData): Promise<UploadImageActionResult> {
   const makeResult = ({ url = '', error = '' }) => ({ url, error })
+
+  const isAuthenticated = await verifyLoginSession()
+
+  if (!isAuthenticated) {
+    return { url: '', error: 'Login Required' }
+  }
+
   if (!(formData instanceof FormData)) {
     return makeResult({ error: 'Invalid data' })
   }

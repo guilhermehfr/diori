@@ -1,6 +1,8 @@
 'use server'
 
-import { verifyPassword } from '@/src/lib/login/manage-login'
+import { redirect } from 'next/navigation'
+
+import { createLoginSession, verifyPassword } from '@/src/lib/login/manage-login'
 
 type LoginActionState = {
   username: string
@@ -8,6 +10,15 @@ type LoginActionState = {
 }
 
 export async function loginAction(state: LoginActionState, formData: FormData) {
+  const loginAllowed = Boolean(Number(process.env.ALLOW_LOGIN))
+
+  if (!loginAllowed) {
+    return {
+      username: '',
+      error: 'Login is not allowed',
+    }
+  }
+
   if (!(formData instanceof FormData)) {
     return {
       username: state.username,
@@ -35,8 +46,6 @@ export async function loginAction(state: LoginActionState, formData: FormData) {
     }
   }
 
-  return {
-    username: '',
-    error: '',
-  }
+  await createLoginSession(username)
+  redirect('/admin/post')
 }

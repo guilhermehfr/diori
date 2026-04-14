@@ -8,6 +8,7 @@ import { TAG_POSTS, tagPost } from '@/src/lib/cache/tags'
 import { PostUpdateSchema } from '@/src/lib/validation'
 import { getZodErrorsMessages } from '@/src/utils/get-zod-errors-messages'
 import { postRepository } from '@/src/repositories/post'
+import { verifyLoginSession } from '@/src/lib/login/manage-login'
 
 type UpdatePostActionState = {
   formState: PublicPost
@@ -19,7 +20,7 @@ export async function updatePostAction(
   prevState: UpdatePostActionState,
   formData: FormData
 ): Promise<UpdatePostActionState> {
-  // TODO: Verify if the user is logged in
+  const isAuthenticated = await verifyLoginSession()
 
   if (!(formData instanceof FormData)) {
     return {
@@ -39,6 +40,13 @@ export async function updatePostAction(
 
   const formDataToObj = Object.fromEntries(formData.entries())
   const zodParsedObj = PostUpdateSchema.safeParse(formDataToObj)
+
+  if (!isAuthenticated) {
+    return {
+      formState: makePartialPublicPost(formDataToObj),
+      errors: ['Login session expired. Please login in another tab to update a post.'],
+    }
+  }
 
   if (!zodParsedObj.success) {
     return {

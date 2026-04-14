@@ -3,13 +3,14 @@
 import { revalidateTag } from 'next/cache'
 import slugify from 'slugify'
 import { v4 as uuidv4 } from 'uuid'
+import { redirect } from 'next/navigation'
 
 import { makePartialPublicPost, PublicPost } from '@/src/dto/post/dto'
 import { PostModel } from '@/src/models/post/post-model'
-import { TAG_POSTS } from '@/src/lib/cache/tags'
 import { PostCreateSchema } from '@/src/lib/validation'
+import { TAG_POSTS } from '@/src/lib/cache/tags'
+import { verifyLoginSession } from '@/src/lib/login/manage-login'
 import { getZodErrorsMessages } from '@/src/utils/get-zod-errors-messages'
-import { redirect } from 'next/navigation'
 import { postRepository } from '@/src/repositories/post'
 
 type CreatePostActionState = {
@@ -22,7 +23,7 @@ export async function createPostAction(
   prevState: CreatePostActionState,
   formData: FormData
 ): Promise<CreatePostActionState> {
-  // TODO: Verify if the user is logged in
+  const isAuthenticated = await verifyLoginSession()
 
   if (!(formData instanceof FormData)) {
     return {
@@ -33,6 +34,13 @@ export async function createPostAction(
 
   const formDataToObj = Object.fromEntries(formData.entries())
   const zodParsedObj = PostCreateSchema.safeParse(formDataToObj)
+
+  if (!isAuthenticated) {
+    return {
+      formState: makePartialPublicPost(formDataToObj),
+      errors: ['Login session expired. Please login in another tab to create a post.'],
+    }
+  }
 
   if (!zodParsedObj.success) {
     return {
