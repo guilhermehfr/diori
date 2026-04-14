@@ -1,8 +1,15 @@
 import { Suspense } from 'react'
 
 import { MenuAdmin } from '@/src/components/admin/MenuAdmin'
+import { requireLoginSessionOrRedirect } from '@/src/lib/login/manage-login'
 
-export default function AdminPostLayout({
+async function AdminPostMenu() {
+  await requireLoginSessionOrRedirect()
+
+  return <MenuAdmin />
+}
+
+export default async function AdminPostLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
@@ -10,7 +17,7 @@ export default function AdminPostLayout({
   return (
     <>
       <Suspense fallback={null}>
-        <MenuAdmin />
+        <AdminPostMenu />
       </Suspense>
       {children}
     </>

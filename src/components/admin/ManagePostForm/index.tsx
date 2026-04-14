@@ -52,6 +52,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
 
   useEffect(() => {
     if (errors.length > 0) {
+      toast.dismiss()
       errors.map((error) => toast.error(error))
     }
   }, [errors])
