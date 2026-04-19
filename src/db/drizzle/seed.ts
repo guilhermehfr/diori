@@ -22,7 +22,7 @@ import { postsTable } from './schemas'
   }
 
   try {
-    await drizzleDb.delete(postsTable) // ISSO LIMPA A BASE DE DADOS
+    await drizzleDb.delete(postsTable)
     await drizzleDb.insert(postsTable).values(posts)
 
     console.log()

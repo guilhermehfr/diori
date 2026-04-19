@@ -1,15 +1,14 @@
-import { resolve } from 'path'
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { drizzle } from 'drizzle-orm/node-postgres'
 
 import { postsTable } from './schemas'
 
-const sqliteDatabasePath = resolve(process.cwd(), 'db.sqlite3')
-const sqliteDatabase = new Database(sqliteDatabasePath)
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is not set')
+}
 
-export const drizzleDb = drizzle(sqliteDatabase, {
+export const drizzleDb = drizzle(process.env.DATABASE_URL, {
   schema: {
     posts: postsTable,
   },
-  logger: false,
+  casing: 'snake_case',
 })

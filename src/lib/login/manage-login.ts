@@ -4,7 +4,7 @@ import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 import { redirect } from 'next/navigation'
 
 const jwtSecretKey: string | undefined = process.env.JWT_SECRET_KEY
-if (!jwtSecretKey) throw new Error('JWT_SECRET_KEY is not defined')
+if (!jwtSecretKey) throw new Error('JWT_SECRET_KEY enviroment variable is not defined')
 
 const jwtEncodedKey: Uint8Array = new TextEncoder().encode(jwtSecretKey)
 
@@ -50,19 +50,13 @@ export async function getLoginSession(): Promise<JWTPayload | null> {
   const cookieStore = await cookies()
   const token: string | undefined = cookieStore.get(loginCookieName)?.value
 
-  if (!token) {
-    return null
-  }
-
-  return await verifyJwt(token)
+  return token ? await verifyJwt(token) : null
 }
 
 export async function verifyLoginSession(): Promise<boolean | null> {
   const loginSession = await getLoginSession()
 
-  if (!loginSession) {
-    return null
-  }
+  if (!loginSession) return null
 
   return loginSession.username === process.env.LOGIN_USERNAME
 }
@@ -70,9 +64,7 @@ export async function verifyLoginSession(): Promise<boolean | null> {
 export async function requireLoginSessionOrRedirect(): Promise<void> {
   const loginSession = await getLoginSession()
 
-  if (!loginSession) {
-    redirect('/admin/login')
-  }
+  if (!loginSession) redirect('/admin/login')
 }
 
 export async function signJwt(jwtPayload: JwtPayload): Promise<string> {
@@ -89,7 +81,8 @@ export async function verifyJwt(token: string | undefined = ''): Promise<JWTPayl
       algorithms: ['HS256'],
     })
     return payload
-  } catch {
+  } catch (error) {
+    console.log('JWT verification failed: ', error)
     return null
   }
 }
