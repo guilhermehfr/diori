@@ -10,7 +10,7 @@
     "format": "prettier --write . && eslint --fix . --ext .js,.jsx,.ts,.tsx",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "node dist/src/db/seed.js",
-    "db:seed:local": "tsx --env-file=.env.local src/db/drizzle/seed.ts",
+    "db:seed:local": "tsx --env-file=.env src/db/drizzle/seed.ts",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

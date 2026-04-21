@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyJwt } from './lib/login/manage-login'
 
 export async function proxy(request: NextRequest) {
+  // This is a showcase mode, where authentication is bypassed for demonstration purposes.
+  if (process.env.SHOWCASE_MODE === 'true') {
+    return NextResponse.next()
+  }
+
   const isLoginPage = request.nextUrl.pathname.startsWith('/admin/login')
   const isAdminPage = request.nextUrl.pathname.startsWith('/admin')
   const isGetRequest = request.method === 'GET'

@@ -22,10 +22,21 @@ import { postsTable } from './schemas'
   }
 
   try {
-    await drizzleDb.delete(postsTable)
+    if (process.env.SHOWCASE_MODE === 'true') {
+      await drizzleDb.delete(postsTable)
+    }
+
     await drizzleDb.insert(postsTable).values(posts)
 
     console.log()
+    if (process.env.SHOWCASE_MODE === 'true') {
+      console.log(
+        'SHOWCASE_MODE is enabled. The database has been >>> CLEANED <<< and seeded with demo data.'
+      )
+    } else {
+      console.log('Database has been seeded with demo data.')
+    }
+
     console.log(`${posts.length} posts foram salvos na base de dados.`)
     console.log()
   } catch (e) {

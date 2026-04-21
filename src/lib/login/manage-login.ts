@@ -54,6 +54,8 @@ export async function getLoginSession(): Promise<JWTPayload | null> {
 }
 
 export async function verifyLoginSession(): Promise<boolean | null> {
+  if (process.env.SHOWCASE_MODE === 'true') return true
+
   const loginSession = await getLoginSession()
 
   if (!loginSession) return null
@@ -62,6 +64,8 @@ export async function verifyLoginSession(): Promise<boolean | null> {
 }
 
 export async function requireLoginSessionOrRedirect(): Promise<void> {
+  if (process.env.SHOWCASE_MODE === 'true') return
+
   const loginSession = await getLoginSession()
 
   if (!loginSession) redirect('/admin/login')
