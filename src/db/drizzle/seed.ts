@@ -1,5 +1,6 @@
 import { resolve } from 'path'
-import { readFile } from 'fs/promises'
+import { readFile, readdir } from 'fs/promises'
+import { put } from '@vercel/blob'
 
 import type { PostModel } from '@/src/models/post/post-model'
 import { drizzleDb } from '.'
@@ -19,6 +20,38 @@ import { postsTable } from './schemas'
 
   if (posts.length === 0) {
     throw new Error('No posts found')
+  }
+
+  if (process.env.DEVELOPMENT_MODE === 'false') {
+    const imagesDir = resolve(process.cwd(), 'public', 'images')
+    const imageFiles = await readdir(imagesDir)
+
+    console.log()
+    console.log('Uploading seed images to Vercel Blob...')
+
+    for (const imageFile of imageFiles) {
+      const imagePath = resolve(imagesDir, imageFile)
+      const imageBuffer = await readFile(imagePath)
+      const blobPath = `uploads/${imageFile}`
+
+      try {
+        await put(blobPath, imageBuffer, {
+          access: 'public',
+        })
+        console.log(`✓ Uploaded ${imageFile} to Blob`)
+      } catch (error) {
+        console.error(`✗ Failed to upload ${imageFile}:`, error)
+      }
+    }
+
+    console.log()
+
+    posts.map((post) => {
+      post.coverImageUrl = post.coverImageUrl.replace(
+        '/images/',
+        process.env.VERCEL_IMAGE_BLOB_URL + '/'
+      )
+    })
   }
 
   try {

@@ -1,8 +1,10 @@
 'use server'
 
-import { verifyLoginSession } from '@/src/lib/login/manage-login'
 import { mkdir, writeFile } from 'fs/promises'
 import { extname, resolve } from 'path'
+import { put } from '@vercel/blob'
+
+import { verifyLoginSession } from '@/src/lib/login/manage-login'
 
 type UploadImageActionResult = {
   url: string
@@ -34,21 +36,38 @@ export async function uploadImageAction(formData: FormData): Promise<UploadImage
     return makeResult({ error: 'Invalid image' })
   }
 
-  const uploadFullPath = resolve(
-    process.cwd(),
-    'public',
-    process.env.IMAGE_UPLOAD_DIRECTORY || 'uploads'
-  )
-  await mkdir(uploadFullPath, { recursive: true })
+  if (process.env.DEVELOPMENT_MODE === 'true') {
+    const uploadFullPath = resolve(
+      process.cwd(),
+      'public',
+      process.env.IMAGE_UPLOAD_DIRECTORY || 'uploads'
+    )
+    await mkdir(uploadFullPath, { recursive: true })
 
-  const imageExtension = extname(file.name)
-  const uniqueImageName = `${Date.now()}${imageExtension}`
-  const fileFullPath = resolve(uploadFullPath, uniqueImageName)
+    const imageExtension = extname(file.name)
+    const uniqueImageName = `${Date.now()}${imageExtension}`
+    const fileFullPath = resolve(uploadFullPath, uniqueImageName)
 
-  const fileArrayBuffer = await file.arrayBuffer()
-  const buffer = Buffer.from(fileArrayBuffer)
-  await writeFile(fileFullPath, buffer)
+    const fileArrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(fileArrayBuffer)
+    await writeFile(fileFullPath, buffer)
 
-  const url = `${process.env.IMAGE_SERVER_URL}/${process.env.IMAGE_UPLOAD_DIRECTORY}/${uniqueImageName}`
-  return makeResult({ url })
+    const url = `${process.env.IMAGE_SERVER_URL}/${process.env.IMAGE_UPLOAD_DIRECTORY}/${uniqueImageName}`
+    return makeResult({ url })
+  }
+
+  try {
+    const imageExtension = extname(file.name)
+    const uniqueImageName = `${Date.now()}${imageExtension}`
+    const blobPath = `uploads/${uniqueImageName}`
+
+    const blob = await put(blobPath, file, {
+      access: 'public',
+    })
+
+    return makeResult({ url: blob.url })
+  } catch (error) {
+    console.error('Blob upload error:', error)
+    return makeResult({ error: 'Upload failed' })
+  }
 }
