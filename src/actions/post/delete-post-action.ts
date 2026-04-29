@@ -2,18 +2,18 @@
 
 import { revalidateTag } from 'next/cache'
 
-// import { verifyLoginSession } from "@/src/lib/login/manage-login";
+import { verifyLoginSession } from '@/src/lib/login/manage-login'
 import { TAG_POSTS, tagPost } from '@/src/lib/cache/tags'
 import { postRepository } from '@/src/repositories/post'
 
 export async function deletePostAction(id: string) {
-  // const isAuthenticated = await verifyLoginSession();
+  const isAuthenticated = await verifyLoginSession()
 
-  // if (!isAuthenticated) {
-  //   return {
-  //     error: "Faça login novamente em outra aba",
-  //   };
-  // }
+  if (!isAuthenticated) {
+    return {
+      error: 'Faça login novamente em outra aba',
+    }
+  }
 
   if (!id || typeof id !== 'string') {
     return {

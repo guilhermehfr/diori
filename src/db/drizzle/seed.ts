@@ -49,7 +49,7 @@ import { postsTable } from './schemas'
     posts.map((post) => {
       post.coverImageUrl = post.coverImageUrl.replace(
         '/images/',
-        process.env.VERCEL_IMAGE_BLOB_URL + '/'
+        process.env.VERCEL_IMAGE_BLOB_URL + '/uploads/'
       )
     })
   }
