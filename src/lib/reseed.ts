@@ -1,13 +1,12 @@
 import { resolve } from 'path'
 import { readFile } from 'fs/promises'
-import { put, del } from '@vercel/blob'
+import { put } from '@vercel/blob'
 
 import type { PostModel } from '@/src/models/post/post-model'
 import { postRepository } from '@/src/repositories/post'
 
 const SEED_POSTS_PATH = resolve(process.cwd(), 'src', 'db', 'seed', 'posts.json')
 const SEED_IMAGES_DIR = resolve(process.cwd(), 'public', 'images')
-const SEED_IMAGE_PREFIX = 'bryen_'
 
 async function checkBlobExists(url: string): Promise<boolean> {
   try {
@@ -16,11 +15,6 @@ async function checkBlobExists(url: string): Promise<boolean> {
   } catch {
     return false
   }
-}
-
-async function getImageNameFromUrl(url: string): string | null {
-  const match = url.match(/\/uploads\/(.+)$/)
-  return match ? match[1] : null
 }
 
 export async function runReseed(): Promise<void> {
