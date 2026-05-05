@@ -1,5 +1,6 @@
 'use server'
 
+import { del } from '@vercel/blob'
 import { revalidateTag } from 'next/cache'
 
 import { verifyLoginSession } from '@/src/lib/login/manage-login'
@@ -23,7 +24,29 @@ export async function deletePostAction(id: string) {
 
   let post
   try {
-    post = await postRepository.delete(id)
+    post = await postRepository.getPublicPostById(id)
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      return {
+        error: e.message,
+      }
+    }
+    return {
+      error: 'Erro desconhecido',
+      errorObject: e,
+    }
+  }
+
+  if (post.coverImageUrl) {
+    try {
+      await del(post.coverImageUrl)
+    } catch (error) {
+      console.error('Error deleting blob image:', error)
+    }
+  }
+
+  try {
+    await postRepository.delete(id)
   } catch (e: unknown) {
     if (e instanceof Error) {
       return {
